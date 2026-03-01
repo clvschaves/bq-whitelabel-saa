@@ -12,7 +12,7 @@ export function ChatInterface() {
         {
             id: '1',
             role: 'assistant',
-            content: 'Hello! I am your AI Data Assistant. Ask me anything about your BigQuery schemas or request a chart for visualization.',
+            content: 'Olá, em que posso ajudar hoje?',
             createdAt: new Date().toISOString(),
         }
     ]);
