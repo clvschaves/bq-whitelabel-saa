@@ -2,13 +2,11 @@ import React from 'react';
 import type { ChatMessage as ChatMessageType } from '@/types/chat';
 import { VegaChart } from '@/components/charts/VegaChart';
 import { DataTable } from '@/components/charts/DataTable';
-import { useAuth } from '@/lib/auth/AuthContext';
 import { Bot, User } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
 export function ChatMessage({ message }: { message: ChatMessageType }) {
-    const { tenant } = useAuth();
     const isUser = message.role === 'user';
 
     return (

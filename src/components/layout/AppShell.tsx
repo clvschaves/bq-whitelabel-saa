@@ -12,11 +12,27 @@ import {
     SidebarProvider,
     SidebarTrigger,
 } from '@/components/ui/sidebar';
-import { useAuth } from '@/lib/auth/AuthContext';
-import { Database, LogOut, MessageSquare, Settings } from 'lucide-react';
+import { createClient } from '@/lib/supabase/client';
+import { LogOut, MessageSquare, Settings, Database } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { logout } from '@/app/actions/auth';
 
 export function AppShell({ children }: { children: React.ReactNode }) {
-    const { user, tenant, logout } = useAuth();
+    const [email, setEmail] = React.useState<string | null>(null);
+    const router = useRouter();
+
+    React.useEffect(() => {
+        const supabase = createClient();
+        supabase.auth.getUser().then(({ data: { user } }) => {
+            if (user) {
+                setEmail(user.email ?? null);
+            }
+        });
+    }, []);
+
+    const handleLogout = async () => {
+        await logout(); // Server action handles clearing cookie and redirecting
+    };
 
     return (
         <SidebarProvider>
@@ -27,12 +43,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                             <div
                                 className="flex h-8 w-8 items-center justify-center rounded bg-primary text-primary-foreground font-bold"
                             >
-                                {tenant?.name?.charAt(0) || 'B'}
+                                B
                             </div>
                             <div className="flex flex-col">
-                                <span className="text-sm font-semibold">{tenant?.name || 'Loading...'}</span>
+                                <span className="text-sm font-semibold">Your Workspace</span>
                                 <span className="text-xs text-muted-foreground truncate max-w-[150px]">
-                                    {user?.email}
+                                    {email || 'Loading...'}
                                 </span>
                             </div>
                         </div>
@@ -64,7 +80,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                     <SidebarFooter className="border-t p-2">
                         <SidebarMenu>
                             <SidebarMenuItem>
-                                <SidebarMenuButton onClick={logout} className="text-muted-foreground hover:text-foreground">
+                                <SidebarMenuButton onClick={handleLogout} className="text-muted-foreground hover:text-foreground">
                                     <LogOut />
                                     <span>Log out</span>
                                 </SidebarMenuButton>

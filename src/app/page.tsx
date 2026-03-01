@@ -1,36 +1,17 @@
-'use client';
-
-import { AuthProvider, useAuth } from '@/lib/auth/AuthContext';
-import { TenantSelector } from '@/components/layout/TenantSelector';
-import { AppShell } from '@/components/layout/AppShell';
 import { ChatInterface } from '@/components/chat/ChatInterface';
+import { createClient } from '@/lib/supabase/server';
+import { redirect } from 'next/navigation';
+export default async function Home() {
+  const supabase = await createClient();
+  const { data: { user }, error } = await supabase.auth.getUser();
 
-// Inner component that actually uses the wrapper
-function MainApp() {
-  const { user, isLoading } = useAuth();
-
-  if (isLoading) {
-    return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
-  }
-
-  if (!user) {
-    return <TenantSelector />;
+  if (error || !user) {
+    redirect('/login');
   }
 
   return (
-    <AppShell>
-      <div className="h-full w-full p-4 lg:p-6">
-        <ChatInterface />
-      </div>
-    </AppShell>
-  );
-}
-
-// Default export wrapping the AuthProvider
-export default function Home() {
-  return (
-    <AuthProvider>
-      <MainApp />
-    </AuthProvider>
+    <div className="h-full w-full p-4 lg:p-6">
+      <ChatInterface />
+    </div>
   );
 }

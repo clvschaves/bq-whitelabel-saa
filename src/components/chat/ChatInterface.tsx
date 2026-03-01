@@ -6,16 +6,14 @@ import { Button } from '@/components/ui/button';
 import { ChatMessage } from '@/components/chat/ChatMessage';
 import type { ChatMessage as ChatMessageType } from '@/types/chat';
 import { submitChatMessage } from '@/app/actions/chat';
-import { useAuth } from '@/lib/auth/AuthContext';
 
 export function ChatInterface() {
-    const { tenant } = useAuth();
     const [messages, setMessages] = useState<ChatMessageType[]>([
         {
             id: '1',
             role: 'assistant',
             content: 'Hello! I am your AI Data Assistant. Ask me anything about your BigQuery schemas or request a chart for visualization.',
-            createdAt: new Date(),
+            createdAt: new Date().toISOString(),
         }
     ]);
     const [input, setInput] = useState('');
@@ -37,7 +35,7 @@ export function ChatInterface() {
             id: Date.now().toString(),
             role: 'user',
             content: input,
-            createdAt: new Date(),
+            createdAt: new Date().toISOString(),
         };
 
         setMessages((prev) => [...prev, userMessage]);
@@ -45,8 +43,8 @@ export function ChatInterface() {
         setIsLoading(true);
 
         try {
-            // Call the Server Action
-            const response = await submitChatMessage(userMessage.content, tenant?.id || 'unknown');
+            // Call the Server Action (tenant id can be fetched from the session inside the action)
+            const response = await submitChatMessage(userMessage.content, 'tenant_id_from_session_later');
 
             const assistantMessage: ChatMessageType = {
                 id: (Date.now() + 1).toString(),
@@ -54,7 +52,7 @@ export function ChatInterface() {
                 content: response.content || 'No response context provided.',
                 chart: response.chart,
                 table: response.table,
-                createdAt: new Date(),
+                createdAt: new Date().toISOString(),
             };
 
             setMessages((prev) => [...prev, assistantMessage]);
@@ -65,7 +63,7 @@ export function ChatInterface() {
                 id: (Date.now() + 1).toString(),
                 role: 'assistant',
                 content: 'Sorry, I encountered an error communicating with the agent.',
-                createdAt: new Date(),
+                createdAt: new Date().toISOString(),
             }]);
         } finally {
             setIsLoading(false);

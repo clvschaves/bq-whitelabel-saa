@@ -4,7 +4,6 @@ import React from 'react';
 // @ts-ignore - Ignoring React Vega type issues temporarily
 import { VegaEmbed } from 'react-vega';
 import type { VisualizationSpec } from 'vega-embed';
-import { useAuth } from '@/lib/auth/AuthContext';
 
 export interface VegaChartProps {
     spec: VisualizationSpec;
@@ -12,8 +11,6 @@ export interface VegaChartProps {
 }
 
 export function VegaChart({ spec, data }: VegaChartProps) {
-    const { tenant } = useAuth();
-
     // We can dynamically inject tenant colors into the vega config
     const customConfig = {
         ...spec.config,
@@ -21,11 +18,9 @@ export function VegaChart({ spec, data }: VegaChartProps) {
         view: {
             stroke: 'transparent',
         },
-        ...(tenant?.primaryColor && {
-            range: {
-                category: [tenant.primaryColor, '#f43f5e', '#f59e0b', '#10b981', '#6366f1']
-            }
-        })
+        range: {
+            category: ['#3b82f6', '#f43f5e', '#f59e0b', '#10b981', '#6366f1'] // Default theme colors
+        }
     };
 
     const finalSpec: any = {

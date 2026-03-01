@@ -29,7 +29,7 @@ export async function submitChatMessage(
     });
 
     try {
-        const sessionId = `tenant-${tenantId}-session-${randomUUID()}`;
+        const sessionId = randomUUID();
         const agentResponse = await service.askQuestion(messageContent, sessionId);
 
         // Provide the dynamic data back. Force JSON clone to guarantee plain objects for Next.js boundary

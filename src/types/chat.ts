@@ -16,5 +16,5 @@ export interface ChatMessage {
     content: string;
     chart?: ChartData;
     table?: TableData;
-    createdAt: Date;
+    createdAt: string;
 }
