@@ -5,6 +5,5 @@ Dockerfile
 .vercel
 .git
 .gitignore
-.env*
 credentials.json
 api_response.json
